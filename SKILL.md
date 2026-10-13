@@ -2,13 +2,15 @@
 name: moonlit-avatar-video
 description: 月明·数字人横版视频制作。用于 avatar_explainer 模式，按主配音与镜头表制作可审看的横版视频。
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   production_mode: "avatar_explainer"
 ---
 
 # 月明·数字人横版视频
 
 输入：已确认主配音、SRT、镜头表、原始手势库 catalog、该配音对应的口型视频。默认 16:9 横版。
+
+盘素材、编排信息画面或预览迭代时，按当前激活名称解析 moonlit-talking-head-video 的 references/material-editing-iteration.md，落实素材可用片段、证据缺口、词级揭示和同窗复核；该资源缺失时明确报告并按本模式已有合同制作。仅复用画面方法，不引入真人实录步骤、SeeCut 工作流或剪映交接，不改本模式的人物出镜与接缝规则。
 
 工作顺序：确认时间与资产 → 指定主持人/圆形头像/隐藏三个状态 → 从 catalog 计算全部接缝 → 先预览底片衔接 → 换口型 → 合成横版信息与证据画面 → 检查每个接缝及字幕 → 完整审看版 → 用户确认后交付。
 
