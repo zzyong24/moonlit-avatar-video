@@ -2,7 +2,7 @@
 name: moonlit-avatar-video
 description: 月明·数字人横版视频制作。用于 avatar_explainer 模式，按主配音与镜头表制作可审看的横版视频。
 metadata:
-  version: "1.0.1"
+  version: "1.1.0"
   production_mode: "avatar_explainer"
 ---
 
@@ -18,7 +18,7 @@ metadata:
 
 人物视频是本轮配音的专用输出；不得拿旧口型视频循环冒充新台词。原始手势可复用。没有通过验收的接缝前后隐藏所有人物层，信息主画面持续承接；禁止淡化双脸、倒放手势。按当前激活列表解析 moonlit-video-script 的 references/presenter-gesture-contract.md，不假定兄弟目录。手势工具由使用方提供 scripts/presenter-gestures/ 或显式路径；缺少时报告依赖，不搜索陌生作品补齐。
 
-画面参考老白类讲解：暗色横版舞台、青绿重点、主持人讲解与信息画面交替。人物机位为竖版时按原比例完整呈现在侧边；圆形头像允许明确的头肩裁剪，产品证据必须 contain。不能把参考作者使用的软件或是否数字人当作已知事实。
+画面参考老白类讲解的结构：暗色横版舞台、主持人讲解与信息画面衔接。颜色、字体、字号取 `moonlit-content-engine/references/brand-tokens.md` 的深色 `night` 主题（深蓝夜底、暖白文字、铜橙重点），不再用青绿。信息画面的动效、B-roll 类型和密度检查以 `moonlit-talking-head-video/references/motion-grammar.md` 为准；主持人优先缩成圆形头像留在舞台上，而不是与信息画面硬切交替，接缝隐藏规则仍按下文执行。人物机位为竖版时按原比例完整呈现在侧边；圆形头像允许明确的头肩裁剪，产品证据必须 contain。不能把参考作者使用的软件或是否数字人当作已知事实。
 
 出镜片段只承担开场、转折、结论；信息页可使用固定位置圆形头像。避免头像每几秒消失再出现：优先合并为有内容意义的隐藏窗口，所有 seam 必須包含在这些窗口内。
 

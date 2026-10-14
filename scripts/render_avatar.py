@@ -4,7 +4,8 @@ import argparse,json,math,re,subprocess,tempfile
 from pathlib import Path
 from PIL import Image,ImageDraw,ImageFont
 W,H,FPS=1280,720,25
-GREEN='#39ec88';PAPER='#f4f2e9';MUTED='#a9bab2';BG='#101c19'
+# 颜色取自 moonlit-content-engine/references/brand-tokens.md 的深色 night 主题
+ACCENT='#e0894f';PAPER='#f3f0e8';MUTED='#8c99aa';BG='#0e1a28';GREEN=ACCENT  # GREEN 仅为旧变量名兼容
 def read(p):return json.loads(Path(p).read_text())
 def srt(path):
  out=[]
@@ -72,35 +73,35 @@ class Painter:
  def frame(self,t,avatar):
   s=next((s for s in self.scenes if s['start']<=t<s['end']),self.scenes[-1]);u=t-s['start'];v=min(1,u/1.2);p=(t-s['start'])/(s['end']-s['start']);idx=self.scenes.index(s);host=s.get('speaker')=='host';show=visible(self.c,t)
   im=Image.new('RGB',self.size,BG);d=NativeDraw(im,self.scale)
-  for x in range(0,W,80):d.line((x,0,x,H),fill='#15251f')
+  for x in range(0,W,80):d.line((x,0,x,H),fill='#132236')
   self.text(d,(50,24),'月明水清深',20);self.text(d,(1020,26),'AI 协作组织',18,MUTED)
   self.text(d,(50,88),s['eyebrow'],16,GREEN);self.text(d,(50,124),s['title'],40);self.text(d,(50,183),s['accent'],28,GREEN)
   bw=830 if host else 1140;top=255
   typ=s.get('visual','asset' if s.get('asset') else 'list')
   if typ=='hook':
    for j,(label,val) in enumerate([('个人产出',.25+.68*min(1,u/3)),('组织协作',.25)]):
-    y=300+j*110;self.text(d,(60,y),label,28);d.rounded_rectangle((240,y,800,y+34),8,fill='#273c32');d.rounded_rectangle((240,y,240+560*val,y+34),8,fill=GREEN if j==0 else '#adbfaf')
+    y=300+j*110;self.text(d,(60,y),label,28);d.rounded_rectangle((240,y,800,y+34),8,fill='#1f3249');d.rounded_rectangle((240,y,240+560*val,y+34),8,fill=GREEN if j==0 else '#8c99aa')
    self.text(d,(60,545),'瓶颈在交接，不在账号数量',30)
   elif typ=='numbers':
    for j,(val,label) in enumerate(zip(['3','5','近 100 万','约 1500'],['工程师','个月','行代码','合并 PR'])):
     x=55+j*285;self.text(d,(x,300+int(10*(1-v))),val,48,GREEN);self.text(d,(x,370),label,24,MUTED)
-   d.line((55,435,1170,435),fill='#385345',width=2);self.text(d,(55,477),'起初仍被“看不见环境”卡住',32)
+   d.line((55,435,1170,435),fill='#2c405a',width=2);self.text(d,(55,477),'起初仍被“看不见环境”卡住',32)
   elif typ=='stack':
    for j,x in enumerate(['业务目标','共享上下文','执行工具','评估反馈','权限审计']):
-    y=247+j*65;active=j<=int(min(.999,p)*5);d.rounded_rectangle((70,y,1110,y+48),8,fill='#234435' if active else '#182a22');self.text(d,(92,y+5),x,26,GREEN if active else MUTED)
+    y=247+j*65;active=j<=int(min(.999,p)*5);d.rounded_rectangle((70,y,1110,y+48),8,fill='#2b3a52' if active else '#172739');self.text(d,(92,y+5),x,26,GREEN if active else MUTED)
   elif typ=='tools':
    self.text(d,(70,275),'全部预载',28);self.text(d,(700,275),'按需发现',28)
    for j in range(20):
-    x=70+(j%5)*90;y=345+(j//5)*44;d.rounded_rectangle((x,y,x+72,y+24),5,fill='#365444')
+    x=70+(j%5)*90;y=345+(j//5)*44;d.rounded_rectangle((x,y,x+72,y+24),5,fill='#24364d')
    self.text(d,(70,555),'100+ 工具 · 额外 5–7 万 Token',24,MUTED)
-   d.rounded_rectangle((700,340,1130,475),12,fill='#254f39');self.text(d,(735,380),'Tool Search',40,GREEN);self.text(d,(700,525),'只加载当前任务所需工具',26)
+   d.rounded_rectangle((700,340,1130,475),12,fill='#2b3a52');self.text(d,(735,380),'Tool Search',40,GREEN);self.text(d,(700,525),'只加载当前任务所需工具',26)
   elif typ=='eval':
    for j,(a,b) in enumerate([('成本','每个已合并 PR / 评审 / 告警'),('质量','回滚率 / F1'),('恢复','恢复时间')]):
-    y=265+j*100;d.rectangle((65,y,71,y+62),fill=GREEN if p>(j/4) else '#355041');self.text(d,(92,y),a,30);self.text(d,(270,y+4),b,26,MUTED)
+    y=265+j*100;d.rectangle((65,y,71,y+62),fill=GREEN if p>(j/4) else '#2a3c54');self.text(d,(92,y),a,30);self.text(d,(270,y+4),b,26,MUTED)
   elif typ=='audit':
    self.text(d,(65,270),'调用链：谁发起 · 谁授权 · 调了什么',32)
    for j,x in enumerate(['身份可确认','调用可追溯','权限可收回']):self.text(d,(65,350+j*65),x,30,GREEN if j<=int(p*3) else MUTED)
-   self.text(d,(700,340),'自主程度',26);d.line((710,495,1150,350),fill='#385843',width=8);q=(math.sin(p*math.pi)*.85);d.ellipse((700+440*q,485-145*q,720+440*q,505-145*q),fill=GREEN)
+   self.text(d,(700,340),'自主程度',26);d.line((710,495,1150,350),fill='#2c405a',width=8);q=(math.sin(p*math.pi)*.85);d.ellipse((700+440*q,485-145*q,720+440*q,505-145*q),fill=GREEN)
   elif typ=='minimal':
    for j,x in enumerate(['选一条高频任务','写清目标与输入','接工具，建验收','把失败原因回写']):
     y=262+j*72;active=j<=int(p*4);self.text(d,(65,y),f'{j+1:02d}',26,GREEN if active else MUTED);self.text(d,(140,y),x,32,PAPER if active else MUTED)
@@ -119,7 +120,7 @@ class Painter:
   if show and avatar is not None:
    before=im.copy()
    if host:
-    self.contain(im,avatar,(942,83,288,512));d=NativeDraw(im,self.scale);d.line((917,95,917,590),fill='#365843',width=2)
+    self.contain(im,avatar,(942,83,288,512));d=NativeDraw(im,self.scale);d.line((917,95,917,590),fill='#2c405a',width=2)
    else:
     unit=avatar.width/288;side=round(142*self.scale);face=avatar.crop(tuple(round(v*unit) for v in (40,15,250,225))).resize((side,side));mask=Image.new('L',(side,side));ImageDraw.Draw(mask).ellipse((0,0,side-1,side-1),fill=255);im.paste(face,(round(1070*self.scale),round(82*self.scale)),mask);d=NativeDraw(im,self.scale);d.ellipse((1068,80,1214,226),outline=GREEN,width=3)
   if show and avatar is not None and self.c.get('speakerTransitionSeconds'):
@@ -131,7 +132,7 @@ class Painter:
      zh=wrap_text(d,cue['zh'],self.fonts[24],1150);en=wrap_text(d,cue['en'],self.fonts[18],1150)
      assert len(zh)<=2 and len(en)<=2,'Caption exceeds bilingual safe area'
      height=len(zh)*29+len(en)*23+9;y=H-8-height
-     d.rectangle((32,y-4,1248,H),fill='#080f0c')
+     d.rectangle((32,y-4,1248,H),fill='#0a1420')
      for line in zh:
       tw=d.textlength(line,font=self.fonts[24]);self.text(d,((W-tw)/2,y),line,24);y+=29
      y+=5
@@ -149,8 +150,8 @@ class Painter:
    d.rectangle((0,0,W,65),fill=BG);chap=self.c['chapters'];cw=1180/len(chap)
    for j,ch in enumerate(chap):
     x=50+j*cw;frac=max(0,min(1,(t-ch['start'])/(ch['end']-ch['start'])))
-    d.rounded_rectangle((x,18,x+cw-4,54),6,fill='#24362e')
-    if frac>0:d.rectangle((x,18,x+(cw-4)*frac,54),fill='#236441')
+    d.rounded_rectangle((x,18,x+cw-4,54),6,fill='#182a40')
+    if frac>0:d.rectangle((x,18,x+(cw-4)*frac,54),fill='#9b4f2c')
     tw=d.textlength(ch['label'],font=self.fonts[16]);self.text(d,(x+(cw-4-tw)/2,26),ch['label'],16)
   else:d.rectangle((0,H-4,int(W*t/self.c['duration']),H),fill=GREEN)
   self.text(d,(50,224),'月明水清深 · '+s.get('sourceLabel','概念演示'),16,MUTED);self.text(d,(1100,64),'AI 合成演示',16,MUTED)
